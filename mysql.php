@@ -6,12 +6,14 @@
  * Time: 2:53 PM
  */
 
+// Parametros generales de coneccion
 $host = "localhost";
 $dbusername = "root";
 $dbpassword = "";
 $database = "proyectodaw";
 $table = "user";
 
+//conexión inicial a la base de datos
 $mysqli = new mysqli($host, $dbusername, $dbpassword, $database);
 if ($mysqli->connect_errno) {
 	echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
@@ -43,3 +45,18 @@ function login($username, $password){
 		mysqli_free_result($result);
 	}
 }
+
+//select
+
+//update
+
+//insert
+
+//delete
+
+//create
+
+//drop
+
+//alter
+
