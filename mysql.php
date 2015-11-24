@@ -20,33 +20,54 @@ if ($mysqli->connect_errno) {
 }
 
 
-function login($username, $password){
-	
-	$query = "SELECT * FROM " . $table . " WHERE `username` = '" . $username . "' AND `password` = '" . $password . "'";
+function login($username, $password)
+{
+    global $table, $mysqli;
+    $query = "SELECT * FROM " . $table . " WHERE `username` = '" . $username . "' AND `password` = '" . $password . "'";
 
-	if ($result = mysqli_query($mysqli, $query)) {
+    if ($result = $mysqli->query($query)) {
         // Return the number of rows in result set
-		$rowcount = mysqli_num_rows($result);
+        $rowcount = $result->num_rows;
         //printf("Result set has %d rows.\n", $rowcount);
 
-		$row = mysqli_fetch_row($query);
-		$userId = $row[0];
+        $row = $result->fetch_assoc();
+        $userId = $row[0];
 
-		if ($rowcount != 0) {
-			$_SESSION['username'] = $username;
-			$_SESSION['id'] = $userId;
-			header('Location: index.php');
+        if ($rowcount != 0) {
+            $_SESSION['username'] = $username;
+            $_SESSION['id'] = $userId;
+            header('Location: index.php');
 
-		} else {
-			echo "Usuario o password incorrecta";
-		}
+        } else {
+            echo "Usuario o password incorrecta";
+        }
 
         // Free result set
-		mysqli_free_result($result);
-	}
+        $result->free();
+    }
 }
 
 //select
+function select($table, $columns, $where)
+{
+    global $mysqli;
+    $columnstring = $columns[0];
+    for ($i = 1; $i < sizeof($columns); $i++) {
+        $columnstring .= ", " . $columns[$i];
+    }
+    $query = "SELECT " . $columns . " FROM " . $table . " WHERE " . $where;
+    $result = $mysqli->query($query);
+    $count = 0;
+    $resultarray = array();
+    while ($row = $result->fetch_assoc()) {
+        for ($i = 0; $i < sizeof($columns); $i++) {
+            $resultarray[$count][$i] = $row[$i];
+        }
+        $count++;
+    }
+    $result->free();
+    return $resultarray;
+}
 
 //update
 
