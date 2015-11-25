@@ -8,13 +8,13 @@
 
 // Parametros generales de coneccion
 $host = "localhost";
-$dbusername = "root";
-$dbpassword = "";
+$dbUsername = "root";
+$dbPassword = "";
 $database = "proyectodaw";
 $table = "user";
 
 //conexión inicial a la base de datos
-$mysqli = new mysqli($host, $dbusername, $dbpassword, $database);
+$mysqli = new mysqli($host, $dbUsername, $dbPassword, $database);
 if ($mysqli->connect_errno) {
 	echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 }
@@ -27,23 +27,24 @@ function login($username, $password)
 
     if ($result = $mysqli->query($query)) {
         // Return the number of rows in result set
-        $rowcount = $result->num_rows;
+        $rowCount = $result->num_rows;
         //printf("Result set has %d rows.\n", $rowcount);
 
         $row = $result->fetch_assoc();
         $userId = $row[0];
+        $result->free();
 
-        if ($rowcount != 0) {
+        if ($rowCount != 0) {
             $_SESSION['username'] = $username;
             $_SESSION['id'] = $userId;
             header('Location: index.php');
+            return "Login correcto";
 
         } else {
-            echo "Usuario o password incorrecta";
+            return "Usuario o password incorrecta";
         }
 
         // Free result set
-        $result->free();
     }
 }
 
@@ -51,22 +52,22 @@ function login($username, $password)
 function select($table, $columns, $where)
 {
     global $mysqli;
-    $columnstring = $columns[0];
+    $columnString = $columns[0];
     for ($i = 1; $i < sizeof($columns); $i++) {
-        $columnstring .= ", " . $columns[$i];
+        $columnString .= ", " . $columns[$i];
     }
-    $query = "SELECT " . $columns . " FROM " . $table . " WHERE " . $where;
+    $query = "SELECT " . $columnString . " FROM " . $table . " WHERE " . $where;
     $result = $mysqli->query($query);
     $count = 0;
-    $resultarray = array();
+    $resultArray = array();
     while ($row = $result->fetch_assoc()) {
         for ($i = 0; $i < sizeof($columns); $i++) {
-            $resultarray[$count][$i] = $row[$i];
+            $resultArray[$count][$i] = $row[$i];
         }
         $count++;
     }
     $result->free();
-    return $resultarray;
+    return $resultArray;
 }
 
 //update
@@ -74,10 +75,31 @@ function select($table, $columns, $where)
 //insert
 
 //delete
+function delete($table, $where)
+{
+    global $mysqli;
+    $query = "DELETE FROM " . $table . " WHERE " . $where;
+    $result = $mysqli->query($query);
+    $count = $mysqli->affected_rows;
+    $result->free();
+    return $count;
+}
 
 //create
 
 //drop
+function drop($table)
+{
+    global $mysqli;
+    $query = "DROP TABLE " . $table;
+    $result = $mysqli->query($query);
+    $result->free();
+    if($mysqli->sqlstate == "00000") {
+        return "Table " . $table . " dropped";
+    } else {
+        return "Error - SQLSTATE " . $mysqli->sqlstate;
+    }
+}
 
 //alter
 
