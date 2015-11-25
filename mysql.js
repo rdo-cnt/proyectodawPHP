@@ -121,7 +121,7 @@ function mysqlAlter(table, operation, column, dataType) {
     request.open("POST", 'mysql.php', true);
     request.onload = handleResponse;
     var data = new FormData();
-    data.append("function", "delete");
+    data.append("function", "alter");
     data.append("table", table);
     data.append("operation", operation);
     data.append("column", column);

@@ -15,6 +15,7 @@ switch ($function) {
         $username = $_POST['username'];
         $password = $_POST['password'];
         echo json_encode(login($username, $password));
+        break;
     case "select":
         $table = $_POST['table'];
         $columns = $_POST['columns'];

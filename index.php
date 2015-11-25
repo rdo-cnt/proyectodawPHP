@@ -21,6 +21,8 @@ else{
 <body>
 Que cool. Tu username es <?php echo $username ?>. Que padre.
 
+<button></button>
+
 <form action ="logout.php">
     <input type = "submit" value="Log out">
 </form>
