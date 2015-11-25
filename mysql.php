@@ -16,7 +16,7 @@ $table = "user";
 //conexión inicial a la base de datos
 $mysqli = new mysqli($host, $dbUsername, $dbPassword, $database);
 if ($mysqli->connect_errno) {
-	echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+    echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 }
 
 
@@ -72,7 +72,38 @@ function select($table, $columns, $where)
 
 //update
 
+
 //insert
+function insert($table, $columns, $values)
+{
+    global $mysqli;
+    $columnString = "";
+    if (sizeof($columns) > 0) {
+        $columnString .= "(" . $columns[0];
+        for ($i = 1; $i < sizeof($columns); $i++) {
+            $columnString .= ", " . $columns[$i];
+        }
+        $columnString .= ")";
+    }
+    $ValuesString = "";
+    if (sizeof($values) > 0) {
+        $ValuesString .= "(" . $values[0];
+        for ($i = 1; $i < sizeof($values); $i++) {
+            $ValuesString .= ", " . $values[$i];
+        }
+        $ValuesString .= ")";
+    } else {
+        return "Error - Por favor de valores a insertar";
+    }
+    $query = "INSERT INTO " . $table . $columnString . " VALUES " . $ValuesString;
+    $result = $mysqli->query($query);
+    $result->free();
+    if ($mysqli->sqlstate == "00000") {
+        return "Values " . $table . " dropped";
+    } else {
+        return "Error - SQLSTATE " . $mysqli->sqlstate;
+    }
+}
 
 //delete
 function delete($table, $where)
@@ -86,6 +117,26 @@ function delete($table, $where)
 }
 
 //create
+function create($table, $columns, $where)
+{
+    global $mysqli;
+    $columnString = $columns[0];
+    for ($i = 1; $i < sizeof($columns); $i++) {
+        $columnString .= ", " . $columns[$i];
+    }
+    $query = "SELECT " . $columnString . " FROM " . $table . " WHERE " . $where;
+    $result = $mysqli->query($query);
+    $count = 0;
+    $resultArray = array();
+    while ($row = $result->fetch_assoc()) {
+        for ($i = 0; $i < sizeof($columns); $i++) {
+            $resultArray[$count][$i] = $row[$i];
+        }
+        $count++;
+    }
+    $result->free();
+    return $resultArray;
+}
 
 //drop
 function drop($table)
@@ -94,7 +145,7 @@ function drop($table)
     $query = "DROP TABLE " . $table;
     $result = $mysqli->query($query);
     $result->free();
-    if($mysqli->sqlstate == "00000") {
+    if ($mysqli->sqlstate == "00000") {
         return "Table " . $table . " dropped";
     } else {
         return "Error - SQLSTATE " . $mysqli->sqlstate;
@@ -102,4 +153,24 @@ function drop($table)
 }
 
 //alter
+function alter($table, $columns, $datatype)
+{
+    global $mysqli;
+    $columnstring = $columns[0];
+    for ($i = 1; $i < sizeof($columns); $i++) {
+        $columnstring .= ", " . $columns[$i];
+    }
+    $query = "ALTER " . " TABLE " . $table . " ADD " . " " . $columns . " ". $datatype;
+    $result = $mysqli->query($query);
+    $count = 0;
+    $resultarray = array();
+    while ($row = $result->fetch_assoc()) {
+        for ($i = 0; $i < sizeof($columns); $i++) {
+            $resultarray[$count][$i] = $row[$i];
+        }
+        $count++;
+    }
+    $result->free();
+    return $resultarray;
+}
 

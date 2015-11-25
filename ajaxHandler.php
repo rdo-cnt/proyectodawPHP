@@ -34,8 +34,6 @@ switch ($function) {
         break;
     case "alter":
         break;
-    case "truncate":
-        break;
     default:
         break;
 }

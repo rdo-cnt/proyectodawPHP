@@ -115,19 +115,8 @@ function mysqlDrop(table) {
     request.send(data);
 }
 
-//truncate
-function mysqlTruncate(table) {
-    request = getRequestObject();
-    request.open("POST", 'mysql.php', true);
-    request.onload = handleResponse;
-    var data = new FormData();
-    data.append("function", "truncate");
-    data.append("table", table);
-    request.send(data);
-}
-
 //alter
-function mysqlAlter(table, operation, info) {
+function mysqlAlter(table, operation, dataType) {
     request = getRequestObject();
     request.open("POST", 'mysql.php', true);
     request.onload = handleResponse;
@@ -135,5 +124,6 @@ function mysqlAlter(table, operation, info) {
     data.append("function", "delete");
     data.append("table", table);
     data.append("operation", operation);
+    data.append("dataType", dataType);
     request.send(data);
 }
