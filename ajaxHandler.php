@@ -31,12 +31,12 @@ switch ($function) {
         $where = $_POST['where'];
         $columnsArray = json_decode($columns);
         $valuesArray = json_decode($values);
-        echo json_decode(update($columnsArray, $table, $valuesArray, $where));
+        echo json_encode(update($columnsArray, $table, $valuesArray, $where));
         break;
     case "delete":
         $table = $_POST['table'];
         $where = $_POST['where'];
-        echo json_decode(delete($table, $where));
+        echo json_encode(delete($table, $where));
         break;
     case "insert":
         $table = $_POST['table'];
@@ -44,25 +44,26 @@ switch ($function) {
         $columns = $_POST['columns'];
         $columnsArray = json_decode($columns);
         $valuesArray = json_decode($values);
-        echo json_decode(insert($table, $columns, $values));
+        echo json_encode(insert($table, $columnsArray, $valuesArray));
+        //echo  $values . $columns;
         break;
     case "create":
         $table = $_POST['table'];
         $options = $_POST['options'];
         $columns = $_POST['columns'];
         $columnsArray = json_decode($columns);
-        echo json_decode(create($table, $columns, $options));
+        echo json_encode(create($table, $columns, $options));
         break;
     case "drop":
         $table = $_POST['table'];
-        echo json_decode(drop($table));
+        echo json_encode(drop($table));
         break;
     case "alter":
         $table = $_POST['table'];
         $operation = $_POST['operation'];
         $column = $_POST['column'];
         $dataType = $_POST['dataType'];
-        echo json_decode(alter($table, $operation, $column, $dataType));
+        echo json_encode(alter($table, $operation, $column, $dataType));
         break;
     default:
         break;
