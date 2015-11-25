@@ -11,6 +11,16 @@ function log() {
     mysqlLogin(username,password);
 }
 
+function createAccount() {
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    var values = [username, password];
+    var columns = ["username","password"];
+    var table = "user";
+    mysqlInsert(table,columns,values);
+}
+
+
 function getRequestObject() {
     if (window.ActiveXObject) {
         return(new ActiveXObject("Microsoft.XMLHTTP"));
@@ -46,7 +56,7 @@ function mysqlLogin(username, password){
 
 function mysqlSelect(table, columns, where){
     request = getRequestObject();
-    request.open("POST", 'mysql.php', true);
+    request.open("POST", 'ajaxHandler.php', true);
     request.onload = handleResponse;
     var data = new FormData();
     data.append("function", "select");
@@ -61,7 +71,7 @@ function mysqlSelect(table, columns, where){
 //update
 function mysqlUpdate(table, columns, values, where){
     request = getRequestObject();
-    request.open("POST", 'mysql.php', true);
+    request.open("POST", 'ajaxHandler.php', true);
     request.onload = handleResponse;
     var data = new FormData();
     data.append("function", "update");
@@ -77,22 +87,27 @@ function mysqlUpdate(table, columns, values, where){
 //insert
 function mysqlInsert(table, columns, values){
     request = getRequestObject();
-    request.open("POST", 'mysql.php', true);
+    console.log("entro este meme de insert");
+    console.log(columns);
+    console.log(values);
+    request.open("POST", 'ajaxHandler.php', true);
     request.onload = handleResponse;
     var data = new FormData();
     data.append("function", "insert");
     data.append("table", table);
     var columnsString = JSON.stringify(columns);
+    console.log(columnsString);
     data.append("columns", columnsString);
     var valuesString = JSON.stringify(values);
-    data.append("columns", valuesString);
+    console.log(valuesString);
+    data.append("values", valuesString);
     request.send(data);
 }
 
 //delete
 function mysqlDelete(table, where){
     request = getRequestObject();
-    request.open("POST", 'mysql.php', true);
+    request.open("POST", 'ajaxHandler.php', true);
     request.onload = handleResponse;
     var data = new FormData();
     data.append("function", "delete");
@@ -104,7 +119,7 @@ function mysqlDelete(table, where){
 //create
 function mysqlCreate(table, columns, options){
     request = getRequestObject();
-    request.open("POST", 'mysql.php', true);
+    request.open("POST", 'ajaxHandler.php', true);
     request.onload = handleResponse;
     var data = new FormData();
     data.append("function", "create");
@@ -119,7 +134,7 @@ function mysqlCreate(table, columns, options){
 //drop
 function mysqlDrop(table) {
     request = getRequestObject();
-    request.open("POST", 'mysql.php', true);
+    request.open("POST", 'ajaxHandler.php', true);
     request.onload = handleResponse;
     var data = new FormData();
     data.append("function", "drop");

@@ -27,5 +27,11 @@ if (isset($_SESSION['username'])){
     <br>
     <button onclick="log()">Login</button>
 
+<br>
+<br>
+
+    <form action="newaccount.php">
+        <input type="submit" value="Crear cuenta">
+    </form>
 </body>
 </html>
