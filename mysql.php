@@ -16,7 +16,7 @@ $table = "user";
 //conexión inicial a la base de datos
 $mysqli = new mysqli($host, $dbUsername, $dbPassword, $database);
 if ($mysqli->connect_errno) {
-	echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+    echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 }
 
 
@@ -73,26 +73,34 @@ function select($table, $columns, $where)
 }
 
 //update
-function update($columns, $table, $values, $where){
+function update($columns, $table, $values, $where)
+{
 
     global $mysqli;
-    if (sizeof($columns) < 1) {return "Error, no hay nada en el arreglo de columnas";}
-    if (sizeof($values) < 1) {return "Error, no hay nada en el arreglo de values";}
-    if (sizeof($columns) != sizeof($values)) {return "Error, los arreglos values y columns son de diferente tamaño";}
-    $columnstring = $columns[0] . "= '" .$values[0]. "'" ;
+    if (sizeof($columns) < 1) {
+        return "Error, no hay nada en el arreglo de columnas";
+    }
+    if (sizeof($values) < 1) {
+        return "Error, no hay nada en el arreglo de values";
+    }
+    if (sizeof($columns) != sizeof($values)) {
+        return "Error, los arreglos values y columns son de diferente tamaño";
+    }
+    $columnString = $columns[0] . "= '" . $values[0] . "'";
     for ($i = 1; $i < sizeof($columns); $i++) {
-        $columnstring .= ", " . $columns[$i] . "= '" .$values[$i]. "'";
+        $columnString .= ", " . $columns[$i] . "= '" . $values[$i] . "'";
     }
 
-    $query = "UPDATE " . $table . " SET " . $columnstring . " WHERE " . $where;
+    $query = "UPDATE " . $table . " SET " . $columnString . " WHERE " . $where;
 
     if ($mysqli->query($query) === TRUE) {
-        echo "Record updated successfully";
+        return "Record updated successfully ". $mysqli->affected_rows;
     } else {
-        echo "Error updating record: " . $mysqli->error;
+        return "Error updating record: " . $mysqli->error;
     }
 
 }
+
 //insert
 
 //delete
@@ -115,7 +123,7 @@ function drop($table)
     $query = "DROP TABLE " . $table;
     $result = $mysqli->query($query);
     $result->free();
-    if($mysqli->sqlstate == "00000") {
+    if ($mysqli->sqlstate == "00000") {
         return "Table " . $table . " dropped";
     } else {
         return "Error - SQLSTATE " . $mysqli->sqlstate;
