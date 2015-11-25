@@ -116,7 +116,7 @@ function mysqlDrop(table) {
 }
 
 //alter
-function mysqlAlter(table, operation, dataType) {
+function mysqlAlter(table, operation, column, dataType) {
     request = getRequestObject();
     request.open("POST", 'mysql.php', true);
     request.onload = handleResponse;
@@ -124,6 +124,7 @@ function mysqlAlter(table, operation, dataType) {
     data.append("function", "delete");
     data.append("table", table);
     data.append("operation", operation);
+    data.append("column", column);
     data.append("dataType", dataType);
     request.send(data);
 }
