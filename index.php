@@ -28,8 +28,10 @@ Que cool. Tu username es <?php echo $username ?>. Que padre.
 </form>
 </body>
 <script>
+
     function selectUsers() {
-        mysqlSelect("user", "*", "true");
+        var columnas = new Array("username","password");
+        mysqlSelect("user", columnas, 1);
     }
 </script>
 </html>

@@ -63,6 +63,8 @@ function mysqlSelect(table, columns, where){
     data.append("table", table);
     var columnsString = JSON.stringify(columns);
     data.append("columns", columnsString);
+    console.log(columnsString);
+
     data.append("where", where);
     request.send(data);
 }

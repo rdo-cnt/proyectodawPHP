@@ -63,12 +63,14 @@ function select($table, $columns, $where)
 
     $query = "SELECT " . $columnString . " FROM " . $table . " WHERE " . $where;
 
+
     if ($result = $mysqli->query($query)) {
         $count = 0;
         $resultArray = array();
         while ($row = $result->fetch_assoc()) {
+            $resultArray[$count] = array();
             for ($i = 0; $i < sizeof($columns); $i++) {
-                $resultArray[$count][$i] = $row[$i];
+                $resultArray[$count][$i] = $row[$columns[$i]];
             }
             $count++;
         }
@@ -122,9 +124,9 @@ function insert($table, $columns, $values)
     }
     $ValuesString = "";
     if (sizeof($values) > 0) {
-        $ValuesString .= "(" . $values[0];
+        $ValuesString .= "( '" . $values[0] . "'";
         for ($i = 1; $i < sizeof($values); $i++) {
-            $ValuesString .= ", " . $values[$i];
+            $ValuesString .= ", '" . $values[$i]. "' ";
         }
         $ValuesString .= ")";
     } else {
@@ -132,7 +134,7 @@ function insert($table, $columns, $values)
     }
     $query = "INSERT INTO " . $table . $columnString . " VALUES " . $ValuesString;
     if ($result = $mysqli->query($query)) {
-        $result->free();
+
         return "Record updated successfully " . $mysqli->affected_rows;
     } else {
         return "Error updating record: " . $mysqli->error;
