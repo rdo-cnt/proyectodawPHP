@@ -182,14 +182,14 @@ function drop($table)
 }
 
 //alter
-function alter($table, $columns, $datatype)
+function alter($table, $columns, $dataType)
 {
     global $mysqli;
     $columnstring = $columns[0];
     for ($i = 1; $i < sizeof($columns); $i++) {
         $columnstring .= ", " . $columns[$i];
     }
-    $query = "ALTER " . " TABLE " . $table . " ADD " . " " . $columns . " ". $datatype;
+    $query = "ALTER " . " TABLE " . $table . " ADD " . " " . $columns . " ". $dataType;
     $result = $mysqli->query($query);
     $count = 0;
     $resultarray = array();
