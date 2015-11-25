@@ -43,8 +43,8 @@ function login($username, $password)
         } else {
             return "Usuario o password incorrecta";
         }
-
-        // Free result set
+    } else {
+        return "Usuario o password incorrecta";
     }
 }
 
@@ -57,25 +57,27 @@ function select($table, $columns, $where)
         $columnString .= ", " . $columns[$i];
     }
 
-    $query = "SELECT " . $columnstring . " FROM " . $table . " WHERE " . $where;
+    $query = "SELECT " . $columnString . " FROM " . $table . " WHERE " . $where;
 
-    $result = $mysqli->query($query);
-    $count = 0;
-    $resultArray = array();
-    while ($row = $result->fetch_assoc()) {
-        for ($i = 0; $i < sizeof($columns); $i++) {
-            $resultArray[$count][$i] = $row[$i];
+    if ($result = $mysqli->query($query)) {
+        $count = 0;
+        $resultArray = array();
+        while ($row = $result->fetch_assoc()) {
+            for ($i = 0; $i < sizeof($columns); $i++) {
+                $resultArray[$count][$i] = $row[$i];
+            }
+            $count++;
         }
-        $count++;
+        $result->free();
+        return $resultArray;
+    } else {
+        return "No se pudo hacer el select " . $mysqli->error;
     }
-    $result->free();
-    return $resultArray;
 }
 
 //update
 function update($columns, $table, $values, $where)
 {
-
     global $mysqli;
     if (sizeof($columns) < 1) {
         return "Error, no hay nada en el arreglo de columnas";
@@ -94,7 +96,7 @@ function update($columns, $table, $values, $where)
     $query = "UPDATE " . $table . " SET " . $columnString . " WHERE " . $where;
 
     if ($mysqli->query($query) === TRUE) {
-        return "Record updated successfully ". $mysqli->affected_rows;
+        return "Record updated successfully " . $mysqli->affected_rows;
     } else {
         return "Error updating record: " . $mysqli->error;
     }
@@ -125,12 +127,11 @@ function insert($table, $columns, $values)
         return "Error - Por favor de valores a insertar";
     }
     $query = "INSERT INTO " . $table . $columnString . " VALUES " . $ValuesString;
-    $result = $mysqli->query($query);
-    $result->free();
-    if ($mysqli->sqlstate == "00000") {
-        return "Values " . $table . " dropped";
+    if ($result = $mysqli->query($query)) {
+        $result->free();
+        return "Record updated successfully " . $mysqli->affected_rows;
     } else {
-        return "Error - SQLSTATE " . $mysqli->sqlstate;
+        return "Error updating record: " . $mysqli->error;
     }
 }
 
@@ -139,32 +140,33 @@ function delete($table, $where)
 {
     global $mysqli;
     $query = "DELETE FROM " . $table . " WHERE " . $where;
-    $result = $mysqli->query($query);
-    $count = $mysqli->affected_rows;
-    $result->free();
-    return $count;
+    if ($result = $mysqli->query($query)) {
+        $result->free();
+        return "Records deleted successfully " . $mysqli->affected_rows;
+    } else {
+        return "Error updating record: " . $mysqli->error;
+    }
 }
 
 //create
-function create($table, $columns, $where)
+function create($table, $columns, $options)
 {
     global $mysqli;
-    $columnString = $columns[0];
-    for ($i = 1; $i < sizeof($columns); $i++) {
-        $columnString .= ", " . $columns[$i];
-    }
-    $query = "SELECT " . $columnString . " FROM " . $table . " WHERE " . $where;
-    $result = $mysqli->query($query);
-    $count = 0;
-    $resultArray = array();
-    while ($row = $result->fetch_assoc()) {
-        for ($i = 0; $i < sizeof($columns); $i++) {
-            $resultArray[$count][$i] = $row[$i];
+    if (sizeof($columns) > 0) {
+        $columnString = "(" . $columns[0];
+        for ($i = 1; $i < sizeof($columns); $i++) {
+            $columnString .= ", " . $columns[$i];
         }
-        $count++;
+        $columnString .= ");";
+    } else {
+        return "Error - Por favor de valores a insertar";
     }
-    $result->free();
-    return $resultArray;
+    $query = "CREATE TABLE " . $table . " " . $columnString . "  " . $options;
+    if ($mysqli->query($query)) {
+        return "Table created successfully";
+    } else {
+        return "Error updating record: " . $mysqli->error;
+    }
 }
 
 //drop
@@ -172,9 +174,7 @@ function drop($table)
 {
     global $mysqli;
     $query = "DROP TABLE " . $table;
-    $result = $mysqli->query($query);
-    $result->free();
-    if ($mysqli->sqlstate == "00000") {
+    if ($mysqli->query($query)) {
         return "Table " . $table . " dropped";
     } else {
         return "Error - SQLSTATE " . $mysqli->sqlstate;
@@ -182,24 +182,18 @@ function drop($table)
 }
 
 //alter
-function alter($table, $columns, $dataType)
+function alter($table, $operation, $columns, $dataType)
 {
     global $mysqli;
     $columnstring = $columns[0];
     for ($i = 1; $i < sizeof($columns); $i++) {
         $columnstring .= ", " . $columns[$i];
     }
-    $query = "ALTER " . " TABLE " . $table . " ADD " . " " . $columns . " ". $dataType;
-    $result = $mysqli->query($query);
-    $count = 0;
-    $resultarray = array();
-    while ($row = $result->fetch_assoc()) {
-        for ($i = 0; $i < sizeof($columns); $i++) {
-            $resultarray[$count][$i] = $row[$i];
-        }
-        $count++;
+    $query = "ALTER " . " TABLE " . $table . " " . $operation . " " . $columns . " " . $dataType;
+    if ($mysqli->query($query)) {
+        return "Table altered successfully";
+    } else {
+        return "Error updating record: " . $mysqli->error;
     }
-    $result->free();
-    return $resultarray;
 }
 
