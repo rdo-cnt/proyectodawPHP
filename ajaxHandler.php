@@ -10,6 +10,7 @@ include "mysql.php";
 
 $function = $_POST['function'];
 
+
 switch ($function) {
     case "login":
         $username = $_POST['username'];
@@ -47,10 +48,10 @@ switch ($function) {
         break;
     case "create":
         $table = $_POST['table'];
-        $where = $_POST['where'];
+        $options = $_POST['options'];
         $columns = $_POST['columns'];
         $columnsArray = json_decode($columns);
-        echo json_decode(create($table, $columns, $where));
+        echo json_decode(create($table, $columns, $options));
         break;
     case "drop":
         $table = $_POST['table'];

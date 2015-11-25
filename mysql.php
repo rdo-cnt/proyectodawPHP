@@ -6,6 +6,7 @@
  * Time: 2:53 PM
  */
 
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 // Parametros generales de coneccion
 $host = "localhost";
 $dbUsername = "root";
@@ -19,12 +20,14 @@ if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 }
 
+session_start();
 
 function login($username, $password)
 {
+
     global $table, $mysqli;
     $query = "SELECT * FROM " . $table . " WHERE `username` = '" . $username . "' AND `password` = '" . $password . "'";
-
+    //return $query;
     if ($result = $mysqli->query($query)) {
         // Return the number of rows in result set
         $rowCount = $result->num_rows;
@@ -37,8 +40,9 @@ function login($username, $password)
         if ($rowCount != 0) {
             $_SESSION['username'] = $username;
             $_SESSION['id'] = $userId;
-            header('Location: index.php');
+            //header('Location: index.php');
             return "Login correcto";
+
 
         } else {
             return "Usuario o password incorrecta";
