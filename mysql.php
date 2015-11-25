@@ -56,7 +56,9 @@ function select($table, $columns, $where)
     for ($i = 1; $i < sizeof($columns); $i++) {
         $columnString .= ", " . $columns[$i];
     }
-    $query = "SELECT " . $columnString . " FROM " . $table . " WHERE " . $where;
+
+    $query = "SELECT " . $columnstring . " FROM " . $table . " WHERE " . $where;
+
     $result = $mysqli->query($query);
     $count = 0;
     $resultArray = array();
@@ -71,6 +73,33 @@ function select($table, $columns, $where)
 }
 
 //update
+function update($columns, $table, $values, $where)
+{
+
+    global $mysqli;
+    if (sizeof($columns) < 1) {
+        return "Error, no hay nada en el arreglo de columnas";
+    }
+    if (sizeof($values) < 1) {
+        return "Error, no hay nada en el arreglo de values";
+    }
+    if (sizeof($columns) != sizeof($values)) {
+        return "Error, los arreglos values y columns son de diferente tamaño";
+    }
+    $columnString = $columns[0] . "= '" . $values[0] . "'";
+    for ($i = 1; $i < sizeof($columns); $i++) {
+        $columnString .= ", " . $columns[$i] . "= '" . $values[$i] . "'";
+    }
+
+    $query = "UPDATE " . $table . " SET " . $columnString . " WHERE " . $where;
+
+    if ($mysqli->query($query) === TRUE) {
+        return "Record updated successfully ". $mysqli->affected_rows;
+    } else {
+        return "Error updating record: " . $mysqli->error;
+    }
+
+}
 
 
 //insert
