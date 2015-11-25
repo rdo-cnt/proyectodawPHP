@@ -4,10 +4,9 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 session_start();
 
-if (isset($_SESSION['username'])){
+if (isset($_SESSION['username'])) {
     $username = $_SESSION['username'];
-}
-else{
+} else {
     header('Location: login.php');
 }
 ?>
@@ -17,14 +16,20 @@ else{
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script type="text/javascript" src="mysql.js"></script>
 </head>
 <body>
 Que cool. Tu username es <?php echo $username ?>. Que padre.
 
-<button></button>
+<button onclick="selectUsers()">Checa tabla</button>
 
-<form action ="logout.php">
-    <input type = "submit" value="Log out">
+<form action="logout.php">
+    <input type="submit" value="Log out">
 </form>
 </body>
+<script>
+    function selectUsers() {
+        mysqlSelect("user", "*", "true");
+    }
+</script>
 </html>
