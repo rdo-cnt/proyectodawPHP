@@ -5,6 +5,12 @@
 
 var request;
 
+function log() {
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    mysqlLogin(username,password);
+}
+
 function getRequestObject() {
     if (window.ActiveXObject) {
         return(new ActiveXObject("Microsoft.XMLHTTP"));
@@ -18,12 +24,18 @@ function getRequestObject() {
 function handleResponse() {
     if (request.status == 200) {
         alert(request.responseText);
+        if(request.responseText == '"Login correcto"')
+        {
+            window.location.href = "index.php";
+
+        }
     }
 }
 
 function mysqlLogin(username, password){
-    request = getRequestObject();
-    request.open("POST", 'mysql.php', true);
+    request = new XMLHttpRequest();
+    console.log("entro este meme");
+    request.open("POST", 'ajaxHandler.php', true);
     request.onload = handleResponse;
     var data = new FormData();
     data.append("function", "login");
