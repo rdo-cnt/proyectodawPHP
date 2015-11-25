@@ -26,29 +26,39 @@ function login($username, $password)
 {
 
     global $table, $mysqli;
-    $query = "SELECT * FROM " . $table . " WHERE `username` = '" . $username . "' AND `password` = '" . $password . "'";
-    //return $query;
-    if ($result = $mysqli->query($query)) {
-        // Return the number of rows in result set
-        $rowCount = $result->num_rows;
-        //printf("Result set has %d rows.\n", $rowcount);
+    $tableInitQuery = "CREATE TABLE IF NOT EXISTS `user` (" .
+        "`idUser` int(11) NOT NULL," .
+        " `username` varchar(20) NOT NULL," .
+        " `password` varchar(100) NOT NULL)";
 
-        $row = $result->fetch_assoc();
-        $userId = $row[0];
-        $result->free();
+    if ($mysqli->query($tableInitQuery)) {
 
-        if ($rowCount != 0) {
-            $_SESSION['username'] = $username;
-            $_SESSION['id'] = $userId;
-            //header('Location: index.php');
-            return "Login correcto";
+        $query = "SELECT * FROM " . $table . " WHERE `username` = '" . $username . "' AND `password` = '" . $password . "'";
+        //return $query;
+        if ($result = $mysqli->query($query)) {
+            // Return the number of rows in result set
+            $rowCount = $result->num_rows;
+            //printf("Result set has %d rows.\n", $rowcount);
+
+            $row = $result->fetch_assoc();
+            $userId = $row[0];
+            $result->free();
+
+            if ($rowCount != 0) {
+                $_SESSION['username'] = $username;
+                $_SESSION['id'] = $userId;
+                //header('Location: index.php');
+                return "Login correcto";
 
 
+            } else {
+                return "Usuario o password incorrecta";
+            }
         } else {
-            return "Usuario o password incorrecta";
+            return "No se pudo intentar hacer logn";
         }
-    } else {
-        return "Usuario o password incorrecta";
+    }else{
+        return "No se puede crear la tabla de usuario";
     }
 }
 
@@ -102,6 +112,7 @@ function update($columns, $table, $values, $where)
     $query = "UPDATE " . $table . " SET " . $columnString . " WHERE " . $where;
 
     if ($mysqli->query($query) === TRUE) {
+
         return "Record updated successfully " . $mysqli->affected_rows;
     } else {
         return "Error updating record: " . $mysqli->error;
@@ -126,7 +137,7 @@ function insert($table, $columns, $values)
     if (sizeof($values) > 0) {
         $ValuesString .= "( '" . $values[0] . "'";
         for ($i = 1; $i < sizeof($values); $i++) {
-            $ValuesString .= ", '" . $values[$i]. "' ";
+            $ValuesString .= ", '" . $values[$i] . "' ";
         }
         $ValuesString .= ")";
     } else {
@@ -147,7 +158,7 @@ function delete($table, $where)
     global $mysqli;
     $query = "DELETE FROM " . $table . " WHERE " . $where;
     if ($result = $mysqli->query($query)) {
-        $result->free();
+
         return "Records deleted successfully " . $mysqli->affected_rows;
     } else {
         return "Error updating record: " . $mysqli->error;
@@ -155,19 +166,19 @@ function delete($table, $where)
 }
 
 //create
-function create($table, $columns, $options)
+function create($table, $columns)
 {
     global $mysqli;
     if (sizeof($columns) > 0) {
-        $columnString = "(" . $columns[0];
+        $columnString = "( " . $columns[0];
         for ($i = 1; $i < sizeof($columns); $i++) {
             $columnString .= ", " . $columns[$i];
         }
-        $columnString .= ");";
+        $columnString .= " );";
     } else {
         return "Error - Por favor de valores a insertar";
     }
-    $query = "CREATE TABLE " . $table . " " . $columnString . "  " . $options;
+    $query = "CREATE TABLE " . $table . " " . $columnString;
     if ($mysqli->query($query)) {
         return "Table created successfully";
     } else {
@@ -188,14 +199,14 @@ function drop($table)
 }
 
 //alter
-function alter($table, $operation, $columns, $dataType)
+function alter($table, $operation, $columns)
 {
     global $mysqli;
     $columnstring = $columns[0];
     for ($i = 1; $i < sizeof($columns); $i++) {
         $columnstring .= ", " . $columns[$i];
     }
-    $query = "ALTER " . " TABLE " . $table . " " . $operation . " " . $columns . " " . $dataType;
+    $query = "ALTER " . " TABLE " . $table . " " . $operation . " " . $columns;
     if ($mysqli->query($query)) {
         return "Table altered successfully";
     } else {

@@ -8,41 +8,40 @@ var request;
 function log() {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
-    mysqlLogin(username,password);
+    mysqlLogin(username, password);
 }
 
 function createAccount() {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
     var values = [username, password];
-    var columns = ["username","password"];
+    var columns = ["username", "password"];
     var table = "user";
-    mysqlInsert(table,columns,values);
+    mysqlInsert(table, columns, values);
 }
 
 
 function getRequestObject() {
     if (window.ActiveXObject) {
-        return(new ActiveXObject("Microsoft.XMLHTTP"));
+        return (new ActiveXObject("Microsoft.XMLHTTP"));
     } else if (window.XMLHttpRequest) {
-        return(new XMLHttpRequest());
+        return (new XMLHttpRequest());
     } else {
-        return(null);
+        return (null);
     }
 }
 
 function handleResponse() {
     if (request.status == 200) {
         alert(request.responseText);
-        if(request.responseText == '"Login correcto"')
-        {
+        if (request.responseText == '"Login correcto"') {
             window.location.href = "index.php";
 
         }
     }
 }
 
-function mysqlLogin(username, password){
+function mysqlLogin(username, password) {
     request = new XMLHttpRequest();
     console.log("entro este meme");
     request.open("POST", 'ajaxHandler.php', true);
@@ -54,7 +53,7 @@ function mysqlLogin(username, password){
     request.send(data);
 }
 
-function mysqlSelect(table, columns, where){
+function mysqlSelect(table, columns, where) {
     request = getRequestObject();
     request.open("POST", 'ajaxHandler.php', true);
     request.onload = handleResponse;
@@ -71,7 +70,7 @@ function mysqlSelect(table, columns, where){
 
 
 //update
-function mysqlUpdate(table, columns, values, where){
+function mysqlUpdate(table, columns, values, where) {
     request = getRequestObject();
     request.open("POST", 'ajaxHandler.php', true);
     request.onload = handleResponse;
@@ -81,13 +80,16 @@ function mysqlUpdate(table, columns, values, where){
     var columnsString = JSON.stringify(columns);
     data.append("columns", columnsString);
     var valuesString = JSON.stringify(values);
-    data.append("columns", valuesString);
+    data.append("values", valuesString);
+    console.log(valuesString);
+    console.log(values);
+    console.log("cool");
     data.append("where", where);
     request.send(data);
 }
 
 //insert
-function mysqlInsert(table, columns, values){
+function mysqlInsert(table, columns, values) {
     request = getRequestObject();
     console.log("entro este meme de insert");
     console.log(columns);
@@ -107,7 +109,7 @@ function mysqlInsert(table, columns, values){
 }
 
 //delete
-function mysqlDelete(table, where){
+function mysqlDelete(table, where) {
     request = getRequestObject();
     request.open("POST", 'ajaxHandler.php', true);
     request.onload = handleResponse;
@@ -119,7 +121,7 @@ function mysqlDelete(table, where){
 }
 
 //create
-function mysqlCreate(table, columns, options){
+function mysqlCreate(table, columns) {
     request = getRequestObject();
     request.open("POST", 'ajaxHandler.php', true);
     request.onload = handleResponse;
@@ -128,8 +130,7 @@ function mysqlCreate(table, columns, options){
     data.append("table", table);
     var columnsString = JSON.stringify(columns);
     data.append("columns", columnsString);
-    var optionsString = JSON.stringify(options);
-    data.append("options", optionsString);
+    console.log(columnsString);
     request.send(data);
 }
 
@@ -145,15 +146,14 @@ function mysqlDrop(table) {
 }
 
 //alter
-function mysqlAlter(table, operation, column, dataType) {
+function mysqlAlter(table, operation, column) {
     request = getRequestObject();
-    request.open("POST", 'mysql.php', true);
+    request.open("POST", 'ajaxHandler.php', true);
     request.onload = handleResponse;
     var data = new FormData();
     data.append("function", "alter");
     data.append("table", table);
     data.append("operation", operation);
     data.append("column", column);
-    data.append("dataType", dataType);
     request.send(data);
 }

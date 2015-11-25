@@ -49,10 +49,9 @@ switch ($function) {
         break;
     case "create":
         $table = $_POST['table'];
-        $options = $_POST['options'];
         $columns = $_POST['columns'];
         $columnsArray = json_decode($columns);
-        echo json_encode(create($table, $columns, $options));
+        echo json_encode(create($table, $columnsArray));
         break;
     case "drop":
         $table = $_POST['table'];
@@ -62,8 +61,7 @@ switch ($function) {
         $table = $_POST['table'];
         $operation = $_POST['operation'];
         $column = $_POST['column'];
-        $dataType = $_POST['dataType'];
-        echo json_encode(alter($table, $operation, $column, $dataType));
+        echo json_encode(alter($table, $operation, $column));
         break;
     default:
         break;
