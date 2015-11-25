@@ -1,5 +1,5 @@
 <?php
-    include("loginaction.php");
+    include("ajaxHandler.php");
 ?>
 
 <!DOCTYPE html>
@@ -7,6 +7,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script
+
+        ></script>
 </head>
 <body>
 <form action ='login.php' method='POST'>
